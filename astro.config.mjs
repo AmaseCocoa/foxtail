@@ -24,7 +24,7 @@ export default defineConfig({
   integrations: [expressiveCode(), react(), mdx(), partytown(), sitemap({
     filter: (page) => page !== 'https://amase.cc/search/',
   }), playformCompress(), compressor()],
-
+  cacheDir: './cache',
   vite: {
     plugins: [tailwindcss()]
   },
