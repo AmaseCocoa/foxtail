@@ -1,0 +1,70 @@
+---
+import { SiGit } from "@icons-pack/react-simple-icons";
+
+const resp = await fetch("https://pinned.berrysauce.dev/get/AmaseCocoa");
+const pinned = await resp.json();
+---
+
+{
+    pinned.map(
+        (
+            item: {
+                author: string;
+                name: string;
+                description: string;
+                language: string;
+                languageColor: string;
+                stars: number;
+                forks: number;
+            },
+            index: number,
+        ) => (
+            <div class="bg-white rounded-2xl p-6 flex items-start gap-6">
+                <div class="text-[#E78B30]">
+                    <SiGit size={48} />
+                </div>
+
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                        <a
+                            href={`https://github.com/${item.author}/${item.name}`}
+                            target="_blank"
+                            rel="noreferer noopener"
+                            translate="no"
+                        >
+                            {item.author}/{item.name}
+                        </a>
+                    </h3>
+                    <p class="text-gray-700 mb-4">{item.description}</p>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1 text-sm" translate="no">
+                            <span class="text-white">{item.language}</span>
+                        </div>
+                        <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1 text-sm">
+                            <span class="text-white">
+                                <a
+                                    href={`https://github.com/${item.author}/${item.name}/stargazers`}
+                                    target="_blank"
+                                    rel="noreferer noopener"
+                                >
+                                    {item.stars} Stars
+                                </a>
+                            </span>
+                        </div>
+                        <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1 text-sm">
+                            <span class="text-white">
+                                <a
+                                    href={`https://github.com/${item.author}/${item.name}/forks`}
+                                    target="_blank"
+                                    rel="noreferer noopener"
+                                >
+                                    {item.forks} Forks
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ),
+    )
+}

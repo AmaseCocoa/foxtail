@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const allPosts = await getCollection('blog');
+const uniqueTags = new Set<string>();
+allPosts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    uniqueTags.add(tag);
+  });
+});
+const sortedTags = Array.from(uniqueTags).sort();
+---
+<BlogLayout title="すべてのタグ">
+  <h1>すべてのタグ一覧</h1>
+  <ul>
+    {sortedTags.map((tag) => (
+      <li>
+        <a href={`/tags/${tag}/`}>{tag}</a>
+      </li>
+    ))}
+  </ul>
+</BlogLayout>

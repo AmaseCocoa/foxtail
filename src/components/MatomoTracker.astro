@@ -1,0 +1,56 @@
+---
+const MATOMO_URL = import.meta.env.PUBLIC_MATOMO_URL || "";
+const MATOMO_SITE_ID = import.meta.env.PUBLIC_MATOMO_SITE_ID || "";
+
+if (!MATOMO_URL || !MATOMO_SITE_ID) {
+    console.error(
+        "Matomo environment variables (PUBLIC_MATOMO_URL or PUBLIC_MATOMO_SITE_ID) are not set.",
+    );
+}
+---
+<script is:inline id="matomo-host" type="application/json" set:html={MATOMO_URL}></script>
+<script is:inline id="matomo-site-id" type="application/json" set:html={MATOMO_SITE_ID}></script>
+
+<script is:inline>
+    const MATOMO_URL = document.getElementById("matomo-host").innerText
+    const MATOMO_SITE_ID = document.getElementById("matomo-site-id").innerText
+
+    var _paq = (window._paq = window._paq || []);
+    const consentCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("allow_analytics="))
+        ?.split("=")[1];
+    if (consentCookie === "false" || consentCookie === undefined) {
+        _paq.push(['forgetCookieConsentGiven']);
+
+        console.log(
+            "Matomo: Cookie consent is NOT given (or rejected). Tracking in COOKIELESS mode.",
+        );
+    } else {
+        _paq.push(['rememberCookieConsentGiven']);
+
+        console.log(
+            "Matomo: Cookie consent is granted. Tracking in STANDARD mode.",
+        );
+    }
+
+    _paq.push(["trackPageView"]);
+    _paq.push(["enableLinkTracking"]);
+
+    (function () {
+        var u = MATOMO_URL;
+        _paq.push(["setTrackerUrl", u + "matomo.php"]);
+        _paq.push(["setSiteId", MATOMO_SITE_ID]);
+        var d = document,
+            g = d.createElement("script"),
+            s = d.getElementsByTagName("script")[0];
+        g.type = "text/partytown"
+        g.async = true;
+        g.src = u + "matomo.js";
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
+
+<noscript>
+    <img referrerpolicy="no-referrer-when-downgrade" src={`${MATOMO_URL}matomo.php?idsite=${MATOMO_SITE_ID}&amp;rec=1`} style="border:0" alt="" />
+</noscript>

@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+---
+
+<div class="mt-8">
+    <h3 class="text-xl font-bold mb-4 border-b-2 border-gray-200 pb-2">Recent Posts</h3>
+    <ul>
+        {
+            allPosts.slice(0, 5).map((post) => (
+                <li class="mb-2">
+                    <a href={`/articles/${post.id}`} class="text-gray-700 no-underline hover:text-[#D4873B] transition-colors relative group">
+                        <span>{post.data.title}</span>
+                    </a>
+                    
+               </li>
+            ))
+        }
+    </ul>
+</div>

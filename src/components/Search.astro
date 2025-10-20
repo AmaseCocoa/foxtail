@@ -1,0 +1,67 @@
+---
+const isDev = import.meta.env.DEV;
+---
+
+<div>
+    {isDev && (
+        <div class="p-4 my-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+            <p class="font-bold">Now in Non-Production Mode.</p>
+            <p>Search is unavaliable.</p>
+        </div>
+    )}
+    {!isDev && (
+        <div id="search"></div>
+    )}
+    
+</div>
+
+<style is:global>
+  /* Import default Pagefind styles */
+  @import "@pagefind/default-ui/css/ui.css";
+
+  /* Override Pagefind CSS variables to match the website theme */
+  :root {
+    --pagefind-ui-primary: #E78B30; /* Main orange color */
+    --pagefind-ui-text: #291F18; /* Dark text color */
+    --pagefind-ui-background: #FFFFFF; /* White background */
+    --pagefind-ui-border: #E5E7EB; /* Light gray border, similar to Tailwind's gray-200 */
+    --pagefind-ui-tag: #FCE9D8; /* Light orange for tags */
+    
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0.5rem; /* 8px, matches rounded-lg */
+    --pagefind-ui-image-border-radius: 0.375rem; /* 6px, matches rounded-md */
+
+    /* Inherit the site's font */
+    --pagefind-ui-font: inherit;
+  }
+
+  /* Further customize specific elements to match Tailwind's look and feel */
+  .pagefind-ui__search-input {
+    border-radius: 0.5rem; /* rounded-lg */
+    border-color: var(--pagefind-ui-border);
+    font-weight: 400; /* Use normal font weight for input */
+  }
+
+  .pagefind-ui__result-link:hover {
+    color: var(--pagefind-ui-primary);
+    text-decoration: none;
+  }
+
+  .pagefind-ui__result-title {
+    font-size: 1.25rem; /* text-xl */
+    color: var(--pagefind-ui-text);
+  }
+
+  .pagefind-ui__result-excerpt {
+    font-size: 1rem; /* text-base */
+  }
+
+</style>
+
+<script>
+  import { PagefindUI } from "@pagefind/default-ui";
+
+  new PagefindUI({
+    element: "#search",
+  });
+</script>

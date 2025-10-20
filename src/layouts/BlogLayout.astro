@@ -1,0 +1,17 @@
+---
+import Layout from "./Layout.astro";
+
+const { title, description, thumbnail = "null", noindex = "false", noAi = false } = Astro.props;
+---
+
+<Layout title={title} description={description} thumbnail={thumbnail} noindex={noindex} noAi={noAi} >
+    <slot name="header" />
+    <div class="flex flex-col lg:flex-row p-5 max-w-7xl mx-auto">
+        <div class="w-full lg:w-3/4 lg:pr-8">
+            <slot />
+        </div>
+        <div class="w-full lg:w-1/4 mt-8 lg:mt-0 sticky top-24 h-fit">
+            <slot name="sidebar" />
+        </div>
+    </div>
+</Layout>

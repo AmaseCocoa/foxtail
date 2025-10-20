@@ -1,0 +1,26 @@
+---
+import { Search } from "lucide-react";
+---
+
+<header class="sticky top-0 z-50 py-4 px-6 text-[#291F18] bg-[#FCF8F1] border-b border-gray-300 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2">
+        <h2 class="text-2xl font-bold hover:text-[#D4873B] transition-colors" translate="no">FoxTail</h2>
+    </a>
+    <nav class="flex items-center gap-6 text-[#291F18]">
+        <a href="/" class="text-lg font-medium hover:text-[#D4873B] transition-colors relative group" translate="no">
+            <span>Home</span>
+            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#D4873B] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></span>
+        </a>
+        <a href="/works" class="text-lg font-medium hover:text-[#D4873B] transition-colors relative group" translate="no">
+            <span>Works</span>
+            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#D4873B] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></span>
+        </a>
+        <a href="/blog" class="text-lg font-medium hover:text-[#D4873B] transition-colors relative group" translate="no">
+            <span>Blog</span>
+            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#D4873B] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></span>
+        </a>
+        <a href="/search" class="text-lg font-medium hover:text-[#D4873B] transition-colors relative group">
+            <span><Search size={20} /></span>
+        </a>
+    </nav>
+</header>

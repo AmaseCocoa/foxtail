@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import BlogProfile from '../../components/BlogProfile.astro';
+import RecentPosts from '../../components/RecentPosts.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+
+  const uniqueTags = new Set<string>();
+  allPosts.forEach((post) => {
+    post.data.tags?.forEach((tag) => {
+      uniqueTags.add(tag);
+    });
+  });
+
+  return Array.from(uniqueTags).map((tag) => {
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.tags?.includes(tag)
+    );
+    return {
+      params: { tag: tag },
+      props: {
+        tag: tag,
+        posts: filteredPosts,
+      },
+    };
+  });
+}
+
+const { tag, posts } = Astro.props;
+posts.sort((a, b) => b.data.createdAt.valueOf() - a.data.createdAt.valueOf());
+---
+<BlogLayout title={`タグ: ${tag}`}>
+    <h1 class="text-2xl font-extrabold text-center my-4">タグ: 「{tag}」 の記事一覧</h1>
+
+    <ul>
+        {posts.map((post) => <li class="mb-5">
+            <ArticleCard url={`/articles/${post.id}`} title={post.data.title} pubDate={post.data.createdAt} description={post.data.description} tags={post.data.tags} />
+        </li>)}
+    </ul>
+    <div slot="sidebar">
+        <BlogProfile />
+        <RecentPosts />
+    </div>
+</BlogLayout>

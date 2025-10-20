@@ -1,0 +1,59 @@
+---
+import { SiX, SiFacebook, SiMisskey, SiMastodon } from "@icons-pack/react-simple-icons";
+import { Link } from "lucide-react";
+
+interface Props {
+    text: string;
+    url: string;
+}
+
+const { text, url } = Astro.props;
+
+const encodedText = encodeURIComponent(text);
+const encodedUrl = encodeURIComponent(url);
+
+const misskayShareUrl = `https://misskey-hub.net/share/?text=${encodedText}&url=${encodedUrl}&visibility=public&localOnly=0`;
+const mastodonShareUrl = `https://donshare.net/share.html?text=${encodedText}&url=${encodedUrl}`;
+const xShareUrl = `https://x.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
+const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+---
+
+<div class="mt-10 py-3 border-t border-gray-200">
+    <h3 class="text-center text-lg font-bold mb-4">この記事を共有する</h3>
+    <div class="flex justify-center items-center gap-4">
+        <a href={misskayShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#A1CA03] transition-colors" title="Misskeyで共有">
+            <SiMisskey size={29} />
+        </a>
+        <a href={mastodonShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#6364FF] transition-colors" title="Mastodonで共有">
+            <SiMastodon size={29} />
+        </a>
+        <button id="copy-link-button" class="text-gray-600 hover:text-[#E78B30] transition-colors" title="リンクをコピー">
+            <Link size={29} />
+        </button>
+        <a href={xShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#000000] transition-colors" title="Xで共有">
+            <SiX size={29} />
+        </a>
+        <a href={facebookShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#1877F2] transition-colors" title="Facebookで共有">
+            <SiFacebook size={29} />
+        </a>
+    </div>
+    <p id="copy-status" class="text-center text-sm text-gray-500 mt-2 h-4"></p>
+</div>
+
+<script>
+    const copyButton = document.getElementById('copy-link-button');
+    const copyStatus = document.getElementById('copy-status');
+    const urlToCopy = copyButton?.closest('div.flex')?.parentElement?.dataset.url;
+
+    copyButton?.addEventListener('click', () => {
+        navigator.clipboard.writeText(location.href).then(() => {
+            copyStatus.textContent = 'コピーしました！';
+            setTimeout(() => {
+                copyStatus.textContent = '';
+            }, 2000);
+        }).catch(err => {
+            copyStatus.textContent = 'コピーに失敗しました';
+            console.error('Failed to copy: ', err);
+        });
+    });
+</script>

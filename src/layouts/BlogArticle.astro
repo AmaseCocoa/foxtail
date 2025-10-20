@@ -1,0 +1,149 @@
+---
+import type { MarkdownHeading } from "astro";
+import BlogProfile from "../components/BlogProfile.astro";
+import TableOfContents from "../components/blog/TableOfContents.astro";
+import BlogLayout from "./BlogLayout.astro";
+import OldPostWarning from "../components/OldPostWarning.astro";
+import ShareButtons from "../components/ShareButtons.astro"; // Import the new component
+import { RotateCw } from "lucide-react";
+import { z } from "astro:content";
+
+const frontmatterLicenseType = z
+        .enum([
+            "CC0",
+            "CC BY",
+            "CC BY-SA",
+            "CC BY-NC",
+            "CC BY-ND",
+            "CC BY-NC-ND",
+            "All Rights Reserved",
+        ])
+        .optional()
+        .default("All Rights Reserved")
+
+const frontmatterType = z.object({
+    createdAt: z.date(),
+    updatedAt: z.date().optional(),
+    iconUrl: z.string().url().optional(),
+    title: z.string(),
+    description: z.string(),
+    thumbnail: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    license: frontmatterLicenseType,
+    noAi: z.boolean().default(true)
+});
+
+const convertLicenseMap = {
+	"CC0": "CC0 1.0 Universal",
+	"CC BY": "Creative Commons Attribution 4.0 International",
+	"CC BY-SA": "Creative Commons Attribution 4.0 International",
+	"CC BY-NC": "Creative Commons Attribution-NonCommercial 4.0 International",
+	"CC BY-ND": "Creative Commons Attribution-NoDerivatives 4.0 International",
+	"CC BY-NC-ND": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
+}
+
+const convertLicenseMapUrl = {
+	"CC0": "https://creativecommons.org/publicdomain/zero/1.0/",
+	"CC BY": "https://creativecommons.org/licenses/by/4.0/",
+	"CC BY-SA": "https://creativecommons.org/licenses/by-sa/4.0/",
+	"CC BY-NC": "https://creativecommons.org/licenses/by-nc/4.0/",
+	"CC BY-ND": "https://creativecommons.org/licenses/by-nd/4.0/",
+	"CC BY-NC-ND": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+}
+
+interface Props {
+    frontmatter: z.infer<typeof frontmatterType>;
+    headings: MarkdownHeading[];
+}
+
+const { frontmatter, headings } = Astro.props;
+const canonicalUrl = Astro.url.href;
+
+const getLicenseLink = (license: z.infer<typeof frontmatterLicenseType>) => {
+    if (license === "All Rights Reserved") {
+        return null;
+    }
+    return convertLicenseMapUrl[license];
+};
+
+const licenseLink = getLicenseLink(frontmatter.license);
+---
+
+<BlogLayout
+    title={frontmatter.title}
+    description={frontmatter.description}
+    thumbnail={frontmatter.thumbnail}
+    noAi={frontmatter.noAi}
+>
+    <div slot="header" class="p-8 text-center">
+        {
+            frontmatter.iconUrl && (
+                <img src={frontmatter.iconUrl} class="w-25 h-25 mx-auto mb-4" />
+            )
+        }
+        <h1 class="text-4xl font-extrabold text-center my-4" data-pagefind-body>
+            {frontmatter.title}
+        </h1>
+        <p class="flex gap-3 items-center justify-center">
+            <span class="text-xl text-gray-500"
+                >{frontmatter.createdAt.toLocaleDateString()} に公開</span
+            >
+            {
+                frontmatter.updatedAt && (
+                    <span class="flex gap-1 items-center text-xl text-gray-500">
+                        <RotateCw size={20} />{" "}
+                        {frontmatter.updatedAt.toLocaleDateString()}
+                    </span>
+                )
+            }
+        </p>
+    </div>
+    <div class="flex flex-col gap-3">
+        <article
+            class="bg-[#FCF8F1] p-5 prose lg:prose-xl max-w-full lg:max-w-4xl xl:max-w-4xl 2xl:max-w-4xl mx-auto rounded-lg"
+            data-pagefind-body
+        >
+            <div class="flex flex-wrap gap-2">
+                {
+                    frontmatter.tags &&
+                        frontmatter.tags.map((tag: string) => (
+                            <a href={`/tags/${tag}/`} class="no-underline">
+                                <span class="bg-[#E78B30] text-white px-2 py-1 rounded-full text-base">
+                                    {tag}
+                                </span>
+                            </a>
+                        ))
+                }
+            </div>
+            <OldPostWarning
+                pubDate={frontmatter.updatedAt || frontmatter.createdAt}
+            />
+            <slot />
+            <ShareButtons text={frontmatter.title} url={canonicalUrl} />
+            <div class="not-prose mt-8 text-sm text-gray-500 no-underline">
+                {
+                	() => {
+                 		if (frontmatter.license != "All Rights Reserved") {
+		                   if (licenseLink) {
+		                       return (
+						<span>
+							&copy; LICENSED UNDER 
+							<a href={licenseLink} target="_blank" rel="noopener noreferrer" class="hover:text-[#D4873B] transition-colors">
+			                           		{convertLicenseMap[frontmatter.license]}
+			                       		</a>
+						</span>
+					)
+		                   } else {
+		                       return <span>&copy; LICENSED UNDER {convertLicenseMap[frontmatter.license]}</span>
+		                   }
+                   		}
+                 	}
+                }
+            </div>
+        </article>
+    </div>
+    <div slot="sidebar" class="ml-10">
+        <BlogProfile />
+        <TableOfContents headings={headings} />
+    </div>
+</BlogLayout>
