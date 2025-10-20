@@ -1,4 +1,5 @@
 ---
+import type { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
 import { summaly } from '@misskey-dev/summaly';
 
 interface Props {
@@ -6,11 +7,41 @@ interface Props {
     allowPlayer?: boolean;
 }
 
+async function fetchSummalyFromExternal(url: string): Promise<SummalyResult | null> {
+  if (!process.env.MK_SUMMALY_PROXY) {
+  	return null
+  }
+	
+  const builtUrl = `${process.env.MK_SUMMALY_PROXY}?url=${url}`;
+  
+  try {
+    const response = await fetch(builtUrl);
+
+    if (!response.ok) {
+    	return null
+    }
+
+    const data: SummalyResult = await response.json();
+    
+    return data;
+
+  } catch (error) {
+    return null
+  }
+}
+
 const { url, allowPlayer = false } = Astro.props;
 
-const summary = await summaly(url, {
-    userAgent: "AstroOGP (amase.cc)"
-}).catch(() => null);
+let summary;
+
+const fetchedSummary = await fetchSummalyFromExternal(url);
+if (!fetchedSummary) {
+	summary = await summaly(url, {
+	    userAgent: "AstroOGP (amase.cc)"
+	}).catch(() => null);
+} else {
+	summary = fetchedSummary;
+}
 
 if (allowPlayer && summary?.player?.url?.includes('youtube.com/embed')) {
     summary.player.url = summary.player.url.replace('youtube.com', 'youtube-nocookie.com');

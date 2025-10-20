@@ -17,6 +17,7 @@ jobs:
     env:
      PUBLIC_MATOMO_URL: ${{ vars.PUBLIC_MATOMO_URL }}
      PUBLIC_MATOMO_SITE_ID: ${{ vars.PUBLIC_MATOMO_SITE_ID }}
+     MK_SUMMALY_PROXY: ${{ secrets.MK_SUMMALY_PROXY }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
