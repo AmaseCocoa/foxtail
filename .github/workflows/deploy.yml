@@ -5,6 +5,10 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+env:
+  PUBLIC_MATOMO_URL: https://rp1.amase.cc/matomo/
+  PUBLIC_MATOMO_SITE_ID: 1
+
 permissions:
   contents: read
   pages: write
