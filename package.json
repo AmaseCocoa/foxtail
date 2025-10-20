@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "astro": "astro"
   },
+  "packageManager": "pnpm@10.18.3",
   "dependencies": {
     "@ascorbic/bluesky-loader": "^0.1.0",
     "@astrojs/mdx": "^4.3.6",
