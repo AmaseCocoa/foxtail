@@ -1,0 +1,15 @@
+---
+import Advantar from '../../shortcodes/Advantar.astro';
+
+const { name, id, day, lang = "ja" } = Astro.props;
+const url = `https://adventar.org/calendars/${id}`;
+
+// Define the content *inside* the <p> tag
+const content = lang === "ja"
+  ? `この記事は<a href="${url}" rel="noopener noreferrer" target="_blank">${name}</a>の${day}日目の記事です。`
+  : `This article is the article for day ${day} of the <a href="${url}" rel="noopener noreferrer" target="_blank">${name}</a>.`;
+---
+
+<p set:html={content} />
+
+<Advantar id={id} />
