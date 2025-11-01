@@ -1,0 +1,20 @@
+name: Merge Schedule
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+  schedule:
+    - cron: 0 * * * *
+
+jobs:
+  merge_schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: gr2m/merge-schedule-action@a9b6ddcf1282dfd66907bda8e7941dff59f03bad
+        with:
+          time_zone: "Asia/Tokyo"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
