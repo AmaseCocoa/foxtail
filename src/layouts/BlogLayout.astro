@@ -1,10 +1,10 @@
 ---
 import Layout from "./Layout.astro";
 
-const { title, description, thumbnail = "null", noindex = "false", noAi = false } = Astro.props;
+const { title, description, thumbnail = "null", noindex = "false", noAi = false, translationUrl, translationLang, lang } = Astro.props;
 ---
 
-<Layout title={title} description={description} thumbnail={thumbnail} noindex={noindex} noAi={noAi} >
+<Layout title={title} description={description} thumbnail={thumbnail} noindex={noindex} noAi={noAi} translationUrl={translationUrl} translationLang={translationLang} lang={lang} >
     <slot name="header" />
     <div class="flex flex-col lg:flex-row p-5 max-w-7xl mx-auto">
         <div class="w-full lg:w-3/4 lg:pr-8">

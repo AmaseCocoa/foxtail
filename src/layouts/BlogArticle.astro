@@ -3,6 +3,7 @@ import type { MarkdownHeading } from "astro";
 import BlogProfile from "../components/BlogProfile.astro";
 import TableOfContents from "../components/blog/TableOfContents.astro";
 import BlogLayout from "./BlogLayout.astro";
+import AnotherLanguageAvaliable from "../components/AnotherLanguageAvaliable.astro";
 import OldPostWarning from "../components/OldPostWarning.astro";
 import ShareButtons from "../components/ShareButtons.astro"; // Import the new component
 import { RotateCw } from "lucide-react";
@@ -54,9 +55,12 @@ const convertLicenseMapUrl = {
 interface Props {
     frontmatter: z.infer<typeof frontmatterType>;
     headings: MarkdownHeading[];
+    translationUrl?: string;
+    translationLang?: 'en' | 'ja';
+    lang?: 'en' | 'ja';
 }
 
-const { frontmatter, headings } = Astro.props;
+const { frontmatter, headings, translationUrl, translationLang, lang } = Astro.props;
 const canonicalUrl = Astro.url.href;
 
 const getLicenseLink = (license: z.infer<typeof frontmatterLicenseType>) => {
@@ -74,6 +78,9 @@ const licenseLink = getLicenseLink(frontmatter.license);
     description={frontmatter.description}
     thumbnail={frontmatter.thumbnail}
     noAi={frontmatter.noAi}
+    translationUrl={translationUrl}
+    translationLang={translationLang}
+    lang={lang}
 >
     <div slot="header" class="p-8 text-center">
         {
@@ -115,6 +122,12 @@ const licenseLink = getLicenseLink(frontmatter.license);
                         ))
                 }
             </div>
+            
+            {
+                translationUrl && translationLang && (
+                  <AnotherLanguageAvaliable translationUrl={translationUrl} translationLang={translationLang} />
+                )
+            }
             <OldPostWarning
                 pubDate={frontmatter.updatedAt || frontmatter.createdAt}
             />

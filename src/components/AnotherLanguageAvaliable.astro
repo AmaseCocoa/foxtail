@@ -1,0 +1,24 @@
+---
+const { translationLang, translationUrl } = Astro.props;
+---
+<div class="not-prose">
+    {
+      () => {
+        if (translationLang == "en") {
+          return (
+            <div class="px-4 py-3 my-1 bg-yellow-100 border-l-4 border-yellow-500">
+                <p class="font-bold">English Version is avaliable.</p>
+                <a href={translationUrl} class="hover:text-[#D4873B] transition-colors">Read English version</a>
+            </div>
+          )
+        } else if (translationLang == "ja") {
+          return (
+            <div class="px-5 py-1 my-2 bg-yellow-100 border-l-4 border-yellow-500">
+                <p class="font-bold">この記事は日本語でも読めます。</p>
+                <a href={translationUrl} class="hover:text-[#D4873B] transition-colors">日本語で読む</a>
+            </div>
+          )
+        }
+      }
+    }
+</div>

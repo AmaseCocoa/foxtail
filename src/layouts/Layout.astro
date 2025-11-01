@@ -9,7 +9,7 @@ import MatomoTracker from "../components/MatomoTracker.astro";
 
 import "../styles/global.css";
 
-const { title, description, thumbnail = "null", isTop = "false", noindex = "false", noAi = false } = Astro.props;
+const { title, description, thumbnail = "null", isTop = "false", noindex = "false", noAi = false, translationUrl, translationLang, lang } = Astro.props;
 
 let thumbnailUrl
 if ( thumbnail === "null" ) {
@@ -31,6 +31,24 @@ if ( noindex === "true" ) {
 } else {
 	noIndex = false
 }
+
+let absoluteTranslationURL;
+if (translationUrl) {
+  absoluteTranslationURL = new URL(translationUrl, Astro.url.origin);
+}
+
+let xDefaultUrl;
+let engUrl;
+if (lang === 'ja') {
+    xDefaultUrl = Astro.url.href;
+    if (absoluteTranslationURL) {
+      engUrl = absoluteTranslationURL.href;
+    }
+} else if (lang === 'en' && absoluteTranslationURL) {
+    xDefaultUrl = absoluteTranslationURL.href;
+    engUrl = Astro.url.href;
+}
+
 ---
 
 <!doctype html>
@@ -79,8 +97,15 @@ if ( noindex === "true" ) {
 				)
 			}
 		}}
+		<link rel="alternate" type="application/rss+xml" title="RSS" href={new URL("/rss.xml", Astro.url.origin).href} />
+		<link rel="alternate" type="application/rss+xml" title="RSS (English)" href={new URL("/rss.en.xml", Astro.url.origin).href} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
+		{absoluteTranslationURL && translationLang && (
+				<link rel="alternate" hreflang={translationLang} href={absoluteTranslationURL.href} />
+			)}
+		{engUrl && <link rel="alternate" hreflang="en" href={engUrl} />}
+		{xDefaultUrl && <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />}
 		<MatomoTracker />
 	</head>
 	<body class="flex flex-col min-h-screen font-sans text-[#291F18]">

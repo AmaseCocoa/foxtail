@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 import react from '@astrojs/react';
-import remarkLinkCard from 'remark-link-card-plus';
+import rehypeExternalLinks from 'rehype-external-links';
 
 import mdx from '@astrojs/mdx';
 
@@ -30,8 +30,7 @@ export default defineConfig({
   },
   markdown: {
     rehypePlugins: [
-      "rehype-slug",
-      ["rehype-toc", { headings: ["h2", "h3"] }],
+      [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}]
     ],
   },
 });

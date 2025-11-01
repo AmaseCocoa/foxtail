@@ -4,22 +4,25 @@ import { getCollection, getEntry, render } from 'astro:content';
 import BlogArticle from '../../layouts/BlogArticle.astro';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const allPosts = await getCollection('blog');
+  const allPosts = (await getCollection('blog')).filter(p => p.slug.startsWith('ja/'));
   return allPosts.map(post => ({
-    params: { page: post.id },
+    params: { page: post.slug.replace(/^ja\//, '') },
   }));
 };
 
 const { page: postId } = Astro.params;
-const post = await getEntry('blog', postId as string);
+const post = await getEntry('blog', `ja/${postId}`);
 
 if (!post) {
     return Astro.redirect('/404');
 }
 
+const englishTranslation = await getEntry('blog', `en/${postId}`);
+const translationUrl = englishTranslation ? `/articles/en/${postId}` : undefined;
+
 const { Content, headings } = await render(post);
 ---
 
-<BlogArticle frontmatter={post.data} headings={headings}>
+<BlogArticle frontmatter={post.data} headings={headings} translationUrl={translationUrl} translationLang="en" lang="ja">
   <Content />
 </BlogArticle>

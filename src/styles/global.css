@@ -2,5 +2,49 @@
 @plugin "@tailwindcss/typography";
 
 body {
-    background-color: #F6EDE0;
+    background-color: #f6ede0;
+}
+
+.prose h1::before {
+    content: "# ";
+    color: #d4873b;
+    font-size: 80%;
+}
+
+.prose h2::before {
+    content: "## ";
+    color: #d4873b;
+    font-size: 80%;
+}
+
+.prose h3::before {
+    content: "### ";
+    color: #d4873b;
+    font-size: 80%;
+}
+
+.prose h4::before {
+    content: "#### ";
+    color: #d4873b;
+    font-size: 80%;
+}
+
+.prose a {
+    text-decoration: none;
+}
+
+.prose :not(.not-prose, .not-prose *) a:hover {
+    @apply transition-colors;
+    color: #d4873b;
+}
+
+.not-prose h1::before,
+.not-prose h2::before,
+.not-prose h3::before,
+.not-prose h4::before,
+.not-prose h5::before,
+.not-prose h6::before {
+    content: none;
+    color: inherit;
+    font-size: 100%;
 }
