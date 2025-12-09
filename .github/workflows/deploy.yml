@@ -17,6 +17,7 @@ jobs:
     env:
      PUBLIC_MATOMO_URL: ${{ vars.PUBLIC_MATOMO_URL }}
      PUBLIC_MATOMO_SITE_ID: ${{ vars.PUBLIC_MATOMO_SITE_ID }}
+     SS_OGP: ${{ vars.SS_OGP }}
      MK_SUMMALY_PROXY: ${{ secrets.MK_SUMMALY_PROXY }}
      PINNED_HOST: ${{ secrets.PINNED_HOST }}
     steps:
