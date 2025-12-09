@@ -35,77 +35,101 @@ interface PinnedData {
     forks: number;
 }
 
-async function getPinnedData(username: string): Promise<ApiResponse<PinnedData[]>> {
-    const url = `https://pinned.berrysauce.dev/get/${username}`;
+async function getPinnedData(
+    host: string,
+    username: string,
+): Promise<ApiResponse<PinnedData[]>> {
+    const url = `${host}/get/${username}`;
 
     try {
         const resp = await fetch(url);
 
         if (!resp.ok) {
             const errorText = await resp.text();
-            
+
             const details: ApiErrorDetails = {
                 status: resp.status,
                 statusText: resp.statusText,
-                body: errorText.slice(0, 200) + (errorText.length > 200 ? '...' : '')
+                body:
+                    errorText.slice(0, 200) +
+                    (errorText.length > 200 ? "..." : ""),
             };
-            
-            throw new ApiError(`HTTP Error: ${resp.status} ${resp.statusText}`, details);
+
+            throw new ApiError(
+                `HTTP Error: ${resp.status} ${resp.statusText}`,
+                details,
+            );
         }
 
         const contentType = resp.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
             const bodyText = await resp.text();
-            
+
             const details: ApiErrorDetails = {
                 status: resp.status,
                 statusText: resp.statusText,
-                body: bodyText.slice(0, 200) + (bodyText.length > 200 ? '...' : '')
+                body:
+                    bodyText.slice(0, 200) +
+                    (bodyText.length > 200 ? "..." : ""),
             };
 
-            throw new ApiError("Non-JSON Response: Expected application/json", details);
+            throw new ApiError(
+                "Non-JSON Response: Expected application/json",
+                details,
+            );
         }
 
         const pinned: PinnedData[] = await resp.json();
-        
-        return pinned;
 
+        return pinned;
     } catch (error) {
         if (error instanceof ApiError) {
-            console.error(`API Error for ${username}:`, error.message, error.response);
-            return { 
-                error: error.message, 
-                details: error.response
+            console.error(
+                `API Error for ${username}:`,
+                error.message,
+                error.response,
+            );
+            return {
+                error: error.message,
+                details: error.response,
             };
-        } 
-        
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        }
+
+        const errorMessage =
+            error instanceof Error
+                ? error.message
+                : "An unknown error occurred.";
         console.error(`General Fetch Error for ${username}:`, errorMessage);
-        
-        return { 
+
+        return {
             error: `General Fetch Error: ${errorMessage}`,
-            details: null
+            details: null,
         };
     }
 }
 
-const pinnedResult = await getPinnedData("AmaseCocoa");
+let pinned: PinnedData[];
+if (process.env.PINNED_HOST) {
+    const pinnedResult = await getPinnedData(process.env.PINNED_HOST, "AmaseCocoa");
 
-if ('error' in pinnedResult) {
-    const apiError = pinnedResult;
-    console.error("Pinned Data Fetch Error:", apiError.error);
-    
-    if (apiError.details) {
-        console.error("Details:", 
-            `HTTP Status: ${apiError.details.status}`, 
-            `Body Snippet: ${apiError.details.body}`
-        );
+    if ("error" in pinnedResult) {
+        const apiError = pinnedResult;
+        console.error("Pinned Data Fetch Error:", apiError.error);
+
+        if (apiError.details) {
+            console.error(
+                "Details:",
+                `HTTP Status: ${apiError.details.status}`,
+                `Body Snippet: ${apiError.details.body}`,
+            );
+        }
+
+        throw new Error(`Failed to fetch pinned data: ${apiError.error}`);
     }
-    
-    throw new Error(`Failed to fetch pinned data: ${apiError.error}`);
+    pinned = pinnedResult;
+} else {
+    pinned = [];
 }
-
-const pinned = pinnedResult;
 ---
 
 {
@@ -140,7 +164,10 @@ const pinned = pinnedResult;
                     </h3>
                     <p class="text-gray-700 mb-4">{item.description}</p>
                     <div class="flex flex-wrap gap-2">
-                        <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1 text-sm" translate="no">
+                        <div
+                            class="flex items-center bg-[#E78B30] rounded-full px-3 py-1 text-sm"
+                            translate="no"
+                        >
                             <span class="text-white">{item.language}</span>
                         </div>
                         <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1 text-sm">
