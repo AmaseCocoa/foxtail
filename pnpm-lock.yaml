@@ -29,6 +29,9 @@ importers:
       '@icons-pack/react-simple-icons':
         specifier: ^13.8.0
         version: 13.8.0(react@18.3.1)
+      '@iframe-resizer/parent':
+        specifier: ^5.5.7
+        version: 5.5.7
       '@misskey-dev/summaly':
         specifier: ^5.2.4
         version: 5.2.4
@@ -505,6 +508,12 @@ packages:
     resolution: {integrity: sha512-iZrhL1fSklfCCVn68IYHaAoKfcby3RakUTn2tRPyHBkhr2tkYqeQbjJWf+NizIYBzKBn2IarDJXmTdXd6CuEfw==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
+
+  '@iframe-resizer/core@5.5.7':
+    resolution: {integrity: sha512-jxKF0uGS8RfJSkDoRJ697JbmuykGvEhl9nOLnBXdkaARcsFgTT1/Uvz3mxNHw3AqDgNCxCySuI5jYpYM7M4Xbw==}
+
+  '@iframe-resizer/parent@5.5.7':
+    resolution: {integrity: sha512-1dDlHFl7TOgu7odDcz/AQkJRcm9Ztpw2F8af/IU5ZAJhVlQkj8pjdnc5RfniGqY3AHOnryFATtrk7TDgZqPQFg==}
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -1315,6 +1324,9 @@ packages:
     resolution: {integrity: sha512-gPa8NY7/lP8j8g81iy8UwANF3+aukKRWS68IlthZQNgykpg80ne6lbHOp6FErYycxQ1TUhgEfkXVDQZAoJx8Bg==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
+
+  auto-console-group@1.2.11:
+    resolution: {integrity: sha512-/RFCswabfQZR4CDYser0V+AC+6+Q1ro2+RrP0AinOXDYnWsm3w14uc2MVdEaaSCDfpiTtETfahE9N7z9Yb1JiA==}
 
   await-lock@2.2.2:
     resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
@@ -3720,6 +3732,15 @@ snapshots:
     dependencies:
       react: 18.3.1
 
+  '@iframe-resizer/core@5.5.7':
+    dependencies:
+      auto-console-group: 1.2.11
+
+  '@iframe-resizer/parent@5.5.7':
+    dependencies:
+      '@iframe-resizer/core': 5.5.7
+      auto-console-group: 1.2.11
+
   '@img/colour@1.0.0': {}
 
   '@img/sharp-darwin-arm64@0.34.2':
@@ -4599,6 +4620,8 @@ snapshots:
       - typescript
       - uploadthing
       - yaml
+
+  auto-console-group@1.2.11: {}
 
   await-lock@2.2.2: {}
 

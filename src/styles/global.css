@@ -48,3 +48,8 @@ body {
     color: inherit;
     font-size: 100%;
 }
+
+.ss-card {
+  width: 100%;
+  height: 100%;
+}

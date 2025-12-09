@@ -1,130 +1,32 @@
 ---
-import type { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
-import { summaly } from '@misskey-dev/summaly';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
-import crypto from 'node:crypto';
+import FallbackLink from "./LegacyLink.astro";
+
+let useFallback: boolean = false;
+let iframeSource: string | null = null;
 
 interface Props {
     url: string;
     allowPlayer?: boolean;
 }
 
-async function fetchSummalyFromExternal(url: string): Promise<SummalyResult | null> {
-  if (!process.env.MK_SUMMALY_PROXY) {
-  	return null
-  }
-	
-  const builtUrl = `${process.env.MK_SUMMALY_PROXY}?url=${url}`;
-  
-  try {
-    const response = await fetch(builtUrl);
-
-    if (!response.ok) {
-    	return null
-    }
-
-    const data: SummalyResult = await response.json();
-    
-    return data;
-
-  } catch (error) {
-    return null
-  }
-}
-
 const { url, allowPlayer = false } = Astro.props;
 
-let summary: SummalyResult | null;
-
-const cacheDir = path.join(process.cwd(), 'cache', 'summary');
-await fs.mkdir(cacheDir, { recursive: true });
-
-const hash = crypto.createHash('sha256').update(url).digest('hex');
-const cachePath = path.join(cacheDir, `${hash}.json`);
-
-try {
-  const cachedData = await fs.readFile(cachePath, 'utf-8');
-  summary = JSON.parse(cachedData);
-} catch (e) {
-	const fetchedSummary = await fetchSummalyFromExternal(url);
-	if (!fetchedSummary) {
-		summary = await summaly(url, {
-			userAgent: "AstroOGP (amase.cc)"
-		}).catch(() => null);
-	} else {
-		summary = fetchedSummary;
-	}
-
-	if (summary) {
-		await fs.writeFile(cachePath, JSON.stringify(summary), 'utf-8');
-	}
-}
-
-
-if (allowPlayer && summary?.player?.url?.includes('youtube.com/embed')) {
-    summary.player.url = summary.player.url.replace('youtube.com', 'youtube-nocookie.com');
+if (!process.env.SS_OGP) {
+    useFallback = true;
+} else {
+    iframeSource = `${process.env.SS_OGP}/card?url=${url}&allowPlayer=${allowPlayer}`;
 }
 ---
 
-{summary && (
-    <div class="w-full my-4 border border-gray-200 rounded-lg overflow-hidden not-prose">
-        {allowPlayer && summary.player?.url ? (
-            <div>
-                <div class="aspect-video">
-                    <iframe
-                        src={summary.player.url}
-                        class="w-full h-full"
-                        frameborder="0"
-                        allow={summary.player.allow?.join('; ')}
-                        allowfullscreen
-                    ></iframe>
-                </div>
-                <div class="p-4 border-t border-gray-200">
-                    <a href={summary.url} target="_blank" rel="noopener noreferrer" class="hover:underline">
-                        <h3 class="font-bold text-gray-800 truncate">
-                            {summary.title || 'No title'}
-                        </h3>
-                    </a>
-                    {summary.sitename && (
-                        <div class="flex items-center text-xs text-gray-500 mt-1">
-                            {summary.icon && <img src={summary.icon} alt="Icon" class="w-4 h-4 mr-2 rounded-full" />}
-                            <span>{summary.sitename}</span>
-                        </div>
-                    )}
-                    {summary.description && (
-                        <p class="text-sm text-gray-600 mt-2 line-clamp-3">
-                            {summary.description}
-                        </p>
-                    )}
-                </div>
-            </div>
-        ) : (
-            <a href={summary.url} target="_blank" rel="noopener noreferrer" class="flex flex-col sm:flex-row hover:bg-gray-50 transition-colors duration-200 no-underline">
-                {summary.thumbnail && (
-                    <div class="flex-shrink-0">
-                        <img src={summary.thumbnail} alt="Thumbnail" class="w-full sm:w-32 h-auto sm:h-32 object-cover" />
-                    </div>
-                )}
-                <div class="flex flex-col gap-3 justify-center px-4 py-2 overflow-hidden min-w-0">
-                    <div class="flex flex-col gap-1">
-                        <h3 class="font-bold text-lg text-gray-800 truncate mt-1">
-                            {summary.title || 'No title'}
-                        </h3>
-                        {summary.description && (
-                            <p class="text-sm text-gray-600 line-clamp-2">
-                                {summary.description}
-                            </p>
-                        )}
-                    </div>
-                    {summary.sitename && (
-                        <div class="flex items-center text-xs text-gray-500">
-                            {summary.icon && <img src={summary.icon} alt="Icon" class="w-4 h-4 mr-2 rounded-full" />}
-                            <span>{summary.sitename}</span>
-                        </div>
-                    )}
-                </div>
-            </a>
-        )}
-    </div>
-)}
+{
+    !useFallback ? (
+        <iframe
+            src={iframeSource}
+            class="ss-card w-full h-auto my-4 rounded-lg"
+            loading="lazy"
+            
+        />
+    ) : (
+        <FallbackLink url={url} allowPlayer={allowPlayer} />
+    )
+}

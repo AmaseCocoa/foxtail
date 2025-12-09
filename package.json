@@ -17,6 +17,7 @@
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@icons-pack/react-simple-icons": "^13.8.0",
+    "@iframe-resizer/parent": "^5.5.7",
     "@misskey-dev/summaly": "^5.2.4",
     "@pagefind/default-ui": "^1.4.0",
     "@playform/compress": "^0.2.0",

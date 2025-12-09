@@ -178,4 +178,14 @@ const licenseLink = getLicenseLink(frontmatter.license);
         <BlogProfile />
         <TableOfContents headings={headings} />
     </div>
+    <script>
+      import iframeResize from '@iframe-resizer/parent';
+      
+      const iframeSelector = '.ss-card'
+      
+      iframeResize({
+        license: 'GPLv3',
+        log: 'collapsed'
+      }, iframeSelector)
+    </script>
 </BlogLayout>
