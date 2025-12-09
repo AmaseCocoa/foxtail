@@ -1,6 +1,9 @@
 ---
 import type { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
 import { summaly } from '@misskey-dev/summaly';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
 
 interface Props {
     url: string;
@@ -32,16 +35,32 @@ async function fetchSummalyFromExternal(url: string): Promise<SummalyResult | nu
 
 const { url, allowPlayer = false } = Astro.props;
 
-let summary;
+let summary: SummalyResult | null;
 
-const fetchedSummary = await fetchSummalyFromExternal(url);
-if (!fetchedSummary) {
-	summary = await summaly(url, {
-	    userAgent: "AstroOGP (amase.cc)"
-	}).catch(() => null);
-} else {
-	summary = fetchedSummary;
+const cacheDir = path.join(process.cwd(), 'cache', 'summary');
+await fs.mkdir(cacheDir, { recursive: true });
+
+const hash = crypto.createHash('sha256').update(url).digest('hex');
+const cachePath = path.join(cacheDir, `${hash}.json`);
+
+try {
+  const cachedData = await fs.readFile(cachePath, 'utf-8');
+  summary = JSON.parse(cachedData);
+} catch (e) {
+	const fetchedSummary = await fetchSummalyFromExternal(url);
+	if (!fetchedSummary) {
+		summary = await summaly(url, {
+			userAgent: "AstroOGP (amase.cc)"
+		}).catch(() => null);
+	} else {
+		summary = fetchedSummary;
+	}
+
+	if (summary) {
+		await fs.writeFile(cachePath, JSON.stringify(summary), 'utf-8');
+	}
 }
+
 
 if (allowPlayer && summary?.player?.url?.includes('youtube.com/embed')) {
     summary.player.url = summary.player.url.replace('youtube.com', 'youtube-nocookie.com');

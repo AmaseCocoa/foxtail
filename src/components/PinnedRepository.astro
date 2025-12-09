@@ -1,8 +1,111 @@
 ---
 import { SiGit } from "@icons-pack/react-simple-icons";
 
-const resp = await fetch("https://pinned.berrysauce.dev/get/AmaseCocoa");
-const pinned = await resp.json();
+interface ApiErrorDetails {
+    status: number;
+    statusText: string;
+    body: string;
+}
+
+type ApiResponse<T> = T | ApiErrorResponse;
+
+interface ApiErrorResponse {
+    error: string;
+    details: ApiErrorDetails | null;
+}
+
+class ApiError extends Error {
+    public name: string = "ApiError";
+    public response: ApiErrorDetails;
+
+    constructor(message: string, response: ApiErrorDetails) {
+        super(message);
+        Object.setPrototypeOf(this, ApiError.prototype);
+        this.response = response;
+    }
+}
+
+interface PinnedData {
+    author: string;
+    name: string;
+    description: string;
+    language: string;
+    languageColor: string;
+    stars: number;
+    forks: number;
+}
+
+async function getPinnedData(username: string): Promise<ApiResponse<PinnedData[]>> {
+    const url = `https://pinned.berrysauce.dev/get/${username}`;
+
+    try {
+        const resp = await fetch(url);
+
+        if (!resp.ok) {
+            const errorText = await resp.text();
+            
+            const details: ApiErrorDetails = {
+                status: resp.status,
+                statusText: resp.statusText,
+                body: errorText.slice(0, 200) + (errorText.length > 200 ? '...' : '')
+            };
+            
+            throw new ApiError(`HTTP Error: ${resp.status} ${resp.statusText}`, details);
+        }
+
+        const contentType = resp.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const bodyText = await resp.text();
+            
+            const details: ApiErrorDetails = {
+                status: resp.status,
+                statusText: resp.statusText,
+                body: bodyText.slice(0, 200) + (bodyText.length > 200 ? '...' : '')
+            };
+
+            throw new ApiError("Non-JSON Response: Expected application/json", details);
+        }
+
+        const pinned: PinnedData[] = await resp.json();
+        
+        return pinned;
+
+    } catch (error) {
+        if (error instanceof ApiError) {
+            console.error(`API Error for ${username}:`, error.message, error.response);
+            return { 
+                error: error.message, 
+                details: error.response
+            };
+        } 
+        
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        console.error(`General Fetch Error for ${username}:`, errorMessage);
+        
+        return { 
+            error: `General Fetch Error: ${errorMessage}`,
+            details: null
+        };
+    }
+}
+
+const pinnedResult = await getPinnedData("AmaseCocoa");
+
+if ('error' in pinnedResult) {
+    const apiError = pinnedResult;
+    console.error("Pinned Data Fetch Error:", apiError.error);
+    
+    if (apiError.details) {
+        console.error("Details:", 
+            `HTTP Status: ${apiError.details.status}`, 
+            `Body Snippet: ${apiError.details.body}`
+        );
+    }
+    
+    throw new Error(`Failed to fetch pinned data: ${apiError.error}`);
+}
+
+const pinned = pinnedResult;
 ---
 
 {
