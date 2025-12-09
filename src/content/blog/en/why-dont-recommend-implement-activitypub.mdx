@@ -1,0 +1,181 @@
+---
+title: Why don't recommend to implement ActivityPub from scratch
+description: ActivityPubをゼロから実装することがなぜ推奨されないのか、その技術的な理由と代替案について解説します。
+createdAt: 2025-12-10
+draft: false
+tags:
+  - activitypub
+adventCalander:
+  id: 11351
+  name: Fediverse Advent Calendar 2025
+  day: 10
+license: CC BY-SA
+additionalText: Partially translated with OpenAI GPT-5
+---
+import Warning from '../../../shortcodes/Warning.astro';
+
+I've have been developing ActivityPub-related libraries myself since about 1y, If some pepole want implement ActivityPub from scratch, **I can't recommend this**.
+
+<Warning>
+  **This article includes opinion from me, maybe have incorrect informations.**
+</Warning>
+
+## Attractive of ActivityPub
+To begin with, ActivityPub have big difference than centerized-sns like, Twitter/X.
+
+It is, **developer can create compliant implementation, can federate to other implementations.** but, ActivityPub also have disadvantages.
+
+## Limitations of ActivityPub
+
+While, ActivityPub has not only appeal and advantages but also challenges and limitations such as the following.
+
+### ActivityPub is not scaleable
+
+I'm think one reason ActivityPub is not scalable is that it uses push-based federation.
+
+First, push-based federation is inhibit the scale. when post created, ActivityPub (server) send http request to remote server of follower. this is essentially an O(n) structure, the more followers and instances you have, the more requests need to send. [^1]
+
+To give an extreme example, if User A, who has 10,000 followers across different instances, creates a post, the server must send 10,000 separate HTTP requests. that's obviously inefficiency, CPU, bandwidth and queue processing are all overloaded.
+
+Moreover, there are cases where the load can become concentrated on the follower’s side.
+For example, suppose user B follows 10,000 users. Even if all 10,000 of those followees are on the same instance, as long as B is on a different server, a burst of posts from the followees will result in 10,000 federation requests hitting B’s server all at once.
+
+Even if all followees are concentrated on a single server, federation works by sending requests **to the follower’s server**, so B’s server will still receive a sudden surge of traffic. This effectively creates a DoS-like spike, and depending on the server’s performance, it may be unable to keep up with the load—potentially causing the instance to go down.
+
+### Many conpatible issues
+
+While ActivityPub is flexible and highly extensible, that same degree of freedom often leads to differences in interpretation between implementations and a lack of interoperability.
+
+* **Edited posts may not be reflected correctly:** Some implementations, such as Misskey, do not support post editing. As a result, even if an implementation with editing support delivers an `Update` activity to Misskey, the change will not be reflected, which can lead to inconsistencies in information.
+* **Lack of support for the Client-to-Server API:** In addition to the Server-to-Server API, ActivityPub also defines a Client-to-Server (C2S) API. However, only a few implementations—such as Pleroma—actually support it.
+* **Use of non-standard vocabularies:** In most cases, AS2 support alone is not sufficient for federating over ActivityPub. Furthermore, some implementations extend existing properties or activities to support proprietary features, resulting in inconsistencies in vocabulary usage.
+
+
+#### Example: Misskey
+
+Misskey includes several proprietary features that are not implemented in Mastodon, such as quote notes, MFM (Markup language For Misskey), and emoji reactions.[^2]
+
+In Misskey (at least in the official implementation), emoji reactions are technically an extension of the `Like` activity.
+
+This extension relies on the `_misskey_reaction` property. This property contains either a Unicode emoji as a string or a string that begins and ends with a colon. In the latter case (custom emoji), the corresponding emoji data is stored in the `tag` property.
+
+Because the feature is based on `Like`, servers that do not support the extension will treat the activity simply as a “like.” While this improves basic interoperability of the activity, it also means that the original intent of the reaction may not be conveyed correctly when it is interpreted merely as a like.
+
+#### Fediverse Enhancement Proposals (FEP)
+
+Fediverse Enhancement Proposals (FEPs) are documents intended to improve interoperability across the Fediverse, but not all implementations follow them.
+
+For example, there are two incompatible specifications for quote posts: `FEP-044f`, which is used by Mastodon, and the traditional method used by Misskey. [^2] As a result, even when implementations provide the same feature, differences in their specifications make interoperability difficult.
+
+
+### Specifications are vague
+One of the biggest problems with ActivityPub is the ambiguity and incompleteness of its specification. This is not merely a matter of the spec being “hard to read”—even when implementers interpret it correctly and follow it faithfully, it is entirely normal for their software to behave differently from other implementations. This is a fatal characteristic for a federation protocol.
+
+#### Not defined of how-to-verify Activity
+
+ActivityPub does not clearly define how received activities should be validated.
+
+Today, many Fediverse implementations effectively treat the outdated draft specification, [draft-cavage-http-signatures], as the de facto standard for HTTP request verification—even though it is an abandoned document.
+
+In contrast, its intended replacement, [RFC 9421] (`draft-ietf-httpbis-message-signatures`), has been published. However, it is not compatible with [draft-cavage-http-signatures], and support is limited to only a few implementations, such as Mastodon. As a result, adoption remains low, and implementations must include “double knocking” logic—retrying verification using the old specification when requests signed with the new one are rejected.
+
+Furthermore, supporting account deletion or relay functionality requires compatibility with [Linked Data Signatures 1.0], which itself relies on the outdated `RsaSignature2017` specification. On top of that, there is yet another related specification: [FEP-8b32: Object Integrity Proofs](https://codeberg.org/fediverse/fep/src/branch/main/fep/8b32/fep-8b32.md).
+
+## Alternatives
+Implementing ActivityPub entirely from scratch is a thorny path—but fortunately, there are several alternatives to building everything yourself.
+
+Here, we introduce some practical options, in order of feasibility.
+
+### 1. Fork existing software
+If you are satisfied with existing Fediverse software and want to build something similar, the most reliable approach is to fork an existing implementation and customize it for your needs.
+
+* Larger implementations already have mature handling of federation, signatures, queue processing, and other complex subsystems.
+* Security risks are dramatically lower compared to building everything from scratch.
+* Existing projects have already dealt with ActivityPub’s quirks, so interoperability issues are far less likely.
+
+For example:
+
+* Fork Mastodon and adjust the UI or posting features.
+* Fork Misskey, remove unnecessary features, or introduce new functionality such as post editing.
+
+Compared to building your own implementation, this approach can reduce development effort to one-tenth—or even less—because the foundation is already in place.
+
+### 2. Use ActivityPub library/framework
+If you want to build your own software rather than forking an existing project, you can still offload federation, signatures, actor management, and other core components to existing libraries.
+
+* You don’t need to define the large number of models—such as actors and activities—yourself.
+* It reduces the risk of mistakes in areas like HTTP signatures and activity delivery.
+* You can focus on developing the software’s unique features without worrying about federation internals.
+
+Examples of ActivityPub libraries and frameworks include:
+
+* **`fedify` (TypeScript)**: [https://fedify.dev](https://fedify.dev)
+* **`go-ap` (Go)**: [https://sr.ht/~mariusor/go-activitypub/](https://sr.ht/~mariusor/go-activitypub/)
+* **`apkit` (Python)**: [https://fedi-libs.github.io/apkit/](https://fedi-libs.github.io/apkit/)
+
+However, the scope of functionality differs across libraries, so you should confirm exactly *which parts* you can delegate before choosing one.
+
+### 3. Narrow your scope at first and gradually expand it
+If you truly insist on building everything from scratch, this is the only realistic approach.
+
+Trying to support *everything* from the beginning—such as:
+
+* editing
+* signature compatibility
+* emoji reactions
+* FEP support
+* compatibility with both Mastodon and Misskey
+* public relays
+
+—will **inevitably** lead to failure.
+
+Start by limiting your implementation to just an inbox (e.g., only `Create` and `Delete`) and basic delivery,
+or create a read-only ActivityPub implementation.
+
+From there, gradually add new features step by step.
+That is the only practical path forward.
+
+### 4. No federation
+In reality, there are cases where people *think* they want federation, but it’s worth asking whether it’s truly necessary.
+
+Federation always comes with a cost, and depending on your requirements, it may actually be better **not** to federate at all—especially for:
+
+* custom chat applications
+* small communities
+* private or closed SNS platforms
+
+In many situations, “we can add federation later if we really need it” is more than sufficient.
+
+## Conclusion
+ActivityPub offers the freedom for “anyone to implement it and federate with anyone,” but that same freedom also brings complexity, ambiguity, and scalability challenges—making it a protocol that imposes very high hurdles on implementers.
+
+Especially when building an implementation from scratch, you will inevitably encounter obstacles such as:
+
+* scalability issues caused by push-based federation
+* incompatibilities between implementations
+* ambiguity in signature and verification specifications
+* numerous implicit assumptions and de facto standards
+* the extreme difficulty of reaching feature parity with existing software
+
+While the appeal of “implementing freely” certainly exists, in practice you often end up constrained by undocumented expectations, or needing to support idiosyncratic behavior from other implementations.
+
+Before starting a full ActivityPub implementation from scratch, it’s worth comparing alternative approaches:
+
+* Fork an existing implementation
+* Use an ActivityPub library
+* Avoid supporting everything from the beginning and expand gradually
+* Reconsider whether federation is necessary at all
+
+These are not compromises—they can easily be the most rational long-term choices.
+
+ActivityPub is an interesting technology and absolutely worth learning. However, in the current ecosystem, pursuing a “complete implementation from scratch” is often a goal whose cost far outweighs its benefits.
+
+I hope this article helps those preparing to take on the challenge make more informed decisions.
+
+[RFC 9421]: https://tex2e.github.io/rfc-translater/html/rfc9421.html
+[Linked Data Signatures 1.0]: https://web.archive.org/web/20170923124140/https://w3c-dvcg.github.io/ld-signatures/
+[draft-cavage-http-signatures]: https://datatracker.ietf.org/doc/html/draft-cavage-http-signatures-12
+
+[^1]: Strictly speaking, because `sharedInbox` exists, if both parties support it, the number of requests can be to only the number of servers where the follower exists.
+[^2]: Strictly speaking, Mastodon has supported [FEP-044f: Consent-respecting quote posts](https://codeberg.org/fediverse/fep/src/branch/main/fep/044f/fep-044f.md) since version 4.5. However, while this specification is compatible with Misskey’s `_misskey_quote` in the *Misskey → Mastodon* direction, it is **not** compatible in the *Mastodon → Misskey* direction.
+[^3]: FEP-044f is compatible with `_misskey_quote`. However, implementations such as Misskey do not support FEP-044f itself. As a result, when Misskey creates a quote post and sends it to Mastodon, Mastodon does **not** recognize it as a quote post.

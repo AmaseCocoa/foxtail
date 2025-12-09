@@ -28,6 +28,7 @@ export const blogSchema = z.object({
   thumbnail: z.string().optional(),
   tags: z.array(z.string()).default([]),
   license: blogLicenses,
+  additionalText: z.string().nullable().default(null),
   adventCalander: adventCalander.nullable().default(null),
   noAi: z.boolean().default(true),
 });

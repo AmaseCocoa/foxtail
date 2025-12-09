@@ -13,32 +13,34 @@ import { blogSchema, blogLicenses } from "../content/config.ts";
 import AdventCalander from "../components/blog/AdventCalander.astro";
 
 const convertLicenseMap = {
-	"CC0": "CC0 1.0 Universal",
-	"CC BY": "Creative Commons Attribution 4.0 International",
-	"CC BY-SA": "Creative Commons Attribution 4.0 International",
-	"CC BY-NC": "Creative Commons Attribution-NonCommercial 4.0 International",
-	"CC BY-ND": "Creative Commons Attribution-NoDerivatives 4.0 International",
-	"CC BY-NC-ND": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
-}
+    CC0: "CC0 1.0 Universal",
+    "CC BY": "Creative Commons Attribution 4.0 International",
+    "CC BY-SA": "Creative Commons Attribution 4.0 International",
+    "CC BY-NC": "Creative Commons Attribution-NonCommercial 4.0 International",
+    "CC BY-ND": "Creative Commons Attribution-NoDerivatives 4.0 International",
+    "CC BY-NC-ND":
+        "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
+};
 
 const convertLicenseMapUrl = {
-	"CC0": "https://creativecommons.org/publicdomain/zero/1.0/",
-	"CC BY": "https://creativecommons.org/licenses/by/4.0/",
-	"CC BY-SA": "https://creativecommons.org/licenses/by-sa/4.0/",
-	"CC BY-NC": "https://creativecommons.org/licenses/by-nc/4.0/",
-	"CC BY-ND": "https://creativecommons.org/licenses/by-nd/4.0/",
-	"CC BY-NC-ND": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-}
+    CC0: "https://creativecommons.org/publicdomain/zero/1.0/",
+    "CC BY": "https://creativecommons.org/licenses/by/4.0/",
+    "CC BY-SA": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "CC BY-NC": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "CC BY-ND": "https://creativecommons.org/licenses/by-nd/4.0/",
+    "CC BY-NC-ND": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+};
 
 interface Props {
     frontmatter: z.infer<typeof blogSchema>;
     headings: MarkdownHeading[];
     translationUrl?: string;
-    translationLang?: 'en' | 'ja';
-    lang?: 'en' | 'ja';
+    translationLang?: "en" | "ja";
+    lang?: "en" | "ja";
 }
 
-const { frontmatter, headings, translationUrl, translationLang, lang } = Astro.props;
+const { frontmatter, headings, translationUrl, translationLang, lang } =
+    Astro.props;
 const canonicalUrl = Astro.url.href;
 
 const getLicenseLink = (license: z.infer<typeof blogLicenses>) => {
@@ -59,6 +61,7 @@ const licenseLink = getLicenseLink(frontmatter.license);
     translationUrl={translationUrl}
     translationLang={translationLang}
     lang={lang}
+    additionalText={frontmatter.additionalText}
 >
     <div slot="header" class="p-8 text-center">
         {
@@ -92,7 +95,11 @@ const licenseLink = getLicenseLink(frontmatter.license);
                 {
                     frontmatter.tags &&
                         frontmatter.tags.map((tag: string) => (
-                            <a href={`/tags/${tag}/`} class="no-underline" translate="no">
+                            <a
+                                href={`/tags/${tag}/`}
+                                class="no-underline"
+                                translate="no"
+                            >
                                 <span class="bg-[#E78B30] text-white px-2 py-1 rounded-full text-base">
                                     {tag}
                                 </span>
@@ -100,42 +107,71 @@ const licenseLink = getLicenseLink(frontmatter.license);
                         ))
                 }
             </div>
-            
+
             {
                 translationUrl && translationLang && (
-                  <AnotherLanguageAvaliable translationUrl={translationUrl} translationLang={translationLang} />
+                    <AnotherLanguageAvaliable
+                        translationUrl={translationUrl}
+                        translationLang={translationLang}
+                    />
                 )
             }
             <OldPostWarning
                 pubDate={frontmatter.updatedAt || frontmatter.createdAt}
             />
             {
-              frontmatter.adventCalander && (
-                <AdventCalander id={frontmatter.adventCalander.id} name={frontmatter.adventCalander.name} day={frontmatter.adventCalander.day} lang={lang} />
-              )
+                frontmatter.adventCalander && (
+                    <AdventCalander
+                        id={frontmatter.adventCalander.id}
+                        name={frontmatter.adventCalander.name}
+                        day={frontmatter.adventCalander.day}
+                        lang={lang}
+                    />
+                )
             }
             <slot />
             <ShareButtons text={frontmatter.title} url={canonicalUrl} />
             <div class="not-prose mt-8 text-sm text-gray-500 no-underline">
                 {
-                	() => {
-                 		if (frontmatter.license != "All Rights Reserved") {
-		                   if (licenseLink) {
-		                       return (
-						<span>
-							&copy; LICENSED UNDER 
-							<a href={licenseLink} target="_blank" rel="noopener noreferrer" class="hover:text-[#D4873B] transition-colors">
-			                           		{convertLicenseMap[frontmatter.license]}
-			                       		</a>
-						</span>
-					)
-		                   } else {
-		                       return <span>&copy; LICENSED UNDER {convertLicenseMap[frontmatter.license]}</span>
-		                   }
-                   		}
-                 	}
+                    () => {
+                        if (frontmatter.license != "All Rights Reserved") {
+                            if (licenseLink) {
+                                return (
+                                    <span>
+                                        &copy; LICENSED UNDER
+                                        <a
+                                            href={licenseLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="hover:text-[#D4873B] transition-colors"
+                                        >
+                                            {
+                                                convertLicenseMap[
+                                                    frontmatter.license
+                                                ]
+                                            }
+                                        </a>
+                                    </span>
+                                );
+                            } else {
+                                return (
+                                    <span>
+                                        &copy; LICENSED UNDER{" "}
+                                        {convertLicenseMap[frontmatter.license]}
+                                    </span>
+                                );
+                            }
+                        }
+                    }
                 }
             </div>
+            {
+                frontmatter.additionalText && (
+                    <div class="not-prose mt-2 text-sm text-gray-500 no-underline">
+                        {frontmatter.additionalText}
+                    </div>
+                )
+            }
         </article>
     </div>
     <div slot="sidebar" class="ml-10">
