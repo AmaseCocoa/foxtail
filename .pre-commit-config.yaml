@@ -1,0 +1,8 @@
+repos:
+  -  repo: local
+     hooks:
+       -   id: check-package-lock-uptodate
+           name: Check pnpm-lock.yaml is up-to-date
+           entry: node scripts/check_lockfile.js
+           language: system
+           files: ^package\.json$
