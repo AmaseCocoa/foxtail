@@ -4,7 +4,7 @@ import { SEO } from "astro-seo";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 
-import CookieConsentPopup from "../components/react/CookieConsence.jsx";
+import CookieConsentPopup from "../components/CookieConsentPopup.astro";
 import MatomoTracker from "../components/MatomoTracker.astro";
 
 import "../styles/global.css";
@@ -113,7 +113,7 @@ if (lang === 'ja') {
 		<content class="flex-grow">
 			<slot />
 		</content>
-		<CookieConsentPopup client:load />
+		<CookieConsentPopup />
 		<Footer />
 	</body>
 </html>

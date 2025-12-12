@@ -1,5 +1,5 @@
 ---
-import { SiGit } from "@icons-pack/react-simple-icons";
+import { Icon } from 'astro-icon/components';
 
 interface ApiErrorDetails {
     status: number;
@@ -148,7 +148,7 @@ if (process.env.PINNED_HOST) {
         ) => (
             <div class="bg-white rounded-2xl p-6 flex items-start gap-6">
                 <div class="text-[#E78B30]">
-                    <SiGit size={48} />
+                    <Icon name="simple-icons:git" size={48} />
                 </div>
 
                 <div class="flex-1">

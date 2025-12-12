@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 
-import { SiMisskey, SiGithub } from "@icons-pack/react-simple-icons";
+import { Icon } from 'astro-icon/components';
 
 import AuthorIcon from '../assets/avatar.png';
 ---
@@ -17,7 +17,7 @@ import AuthorIcon from '../assets/avatar.png';
             rel="noopener noreferrer"
             class="text-gray-600 hover:text-[#D4873B] transition-colors"
         >
-            <SiGithub size={24} />
+            <Icon name="simple-icons:github" size={24} />
         </a>
         <a
             href="https://i.amase.cc/@AmaseCocoa"
@@ -25,7 +25,7 @@ import AuthorIcon from '../assets/avatar.png';
             rel="noopener noreferrer"
             class="text-gray-600 hover:text-[#D4873B] transition-colors"
         >
-            <SiMisskey size={24} />
+            <Icon name="simple-icons:misskey" size={24} />
         </a>
     </div>
 </div>

@@ -1,6 +1,5 @@
 ---
-import { SiX, SiFacebook, SiMisskey, SiMastodon } from "@icons-pack/react-simple-icons";
-import { Link } from "lucide-react";
+import { Icon } from 'astro-icon/components';
 
 interface Props {
     text: string;
@@ -22,19 +21,19 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
     <h3 class="text-center text-lg font-bold mb-4">この記事を共有する</h3>
     <div class="flex justify-center items-center gap-4">
         <a href={misskayShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#A1CA03] transition-colors" title="Misskeyで共有">
-            <SiMisskey size={29} />
+            <Icon name="simple-icons:misskey" size={29} />
         </a>
         <a href={mastodonShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#6364FF] transition-colors" title="Mastodonで共有">
-            <SiMastodon size={29} />
+            <Icon name="simple-icons:mastodon" size={29} />
         </a>
         <button id="copy-link-button" class="text-gray-600 hover:text-[#E78B30] transition-colors" title="リンクをコピー">
-            <Link size={29} />
+            <Icon name="lucide:link" size={29} />
         </button>
         <a href={xShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#000000] transition-colors" title="Xで共有">
-            <SiX size={29} />
+            <Icon name="simple-icons:x" size={29} />
         </a>
         <a href={facebookShareUrl} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-[#1877F2] transition-colors" title="Facebookで共有">
-            <SiFacebook size={29} />
+            <Icon name="simple-icons:facebook" size={29} />
         </a>
     </div>
     <p id="copy-status" class="text-center text-sm text-gray-500 mt-2 h-4"></p>
@@ -43,16 +42,20 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
 <script>
     const copyButton = document.getElementById('copy-link-button');
     const copyStatus = document.getElementById('copy-status');
-    const urlToCopy = copyButton?.closest('div.flex')?.parentElement?.dataset.url;
+//    const urlToCopy = copyButton?.closest('div.flex')?.parentElement?.dataset.url;
 
     copyButton?.addEventListener('click', () => {
         navigator.clipboard.writeText(location.href).then(() => {
-            copyStatus.textContent = 'コピーしました！';
-            setTimeout(() => {
-                copyStatus.textContent = '';
-            }, 2000);
+            if (copyStatus) {
+              copyStatus.textContent = 'コピーしました！';
+              setTimeout(() => {
+                  copyStatus.textContent = '';
+              }, 2000);
+            }
         }).catch(err => {
-            copyStatus.textContent = 'コピーに失敗しました';
+            if (copyStatus) {
+              copyStatus.textContent = 'コピーに失敗しました';
+            }
             console.error('Failed to copy: ', err);
         });
     });

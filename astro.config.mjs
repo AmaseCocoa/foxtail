@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import react from '@astrojs/react';
 import rehypeExternalLinks from 'rehype-external-links';
 
 import mdx from '@astrojs/mdx';
@@ -18,12 +17,14 @@ import playformCompress from "@playform/compress";
 
 import compressor from "astro-compressor";
 
+import icon from 'astro-icon';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://amase.cc',
-  integrations: [expressiveCode(), react(), mdx(), partytown(), sitemap({
+  integrations: [expressiveCode(), mdx(), partytown(), sitemap({
     filter: (page) => page !== 'https://amase.cc/search/',
-  }), playformCompress(), compressor()],
+  }), playformCompress(), compressor(), icon()],
   cacheDir: './cache',
   vite: {
     plugins: [tailwindcss()]

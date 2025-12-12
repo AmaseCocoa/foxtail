@@ -5,8 +5,8 @@ import TableOfContents from "../components/blog/TableOfContents.astro";
 import BlogLayout from "./BlogLayout.astro";
 import AnotherLanguageAvaliable from "../components/AnotherLanguageAvaliable.astro";
 import OldPostWarning from "../components/OldPostWarning.astro";
-import ShareButtons from "../components/ShareButtons.astro"; // Import the new component
-import { RotateCw } from "lucide-react";
+import ShareButtons from "../components/ShareButtons.astro";
+import { Icon } from 'astro-icon/components';
 import { z } from "astro:content";
 import { blogSchema, blogLicenses } from "../content/config.ts";
 
@@ -79,7 +79,7 @@ const licenseLink = getLicenseLink(frontmatter.license);
             {
                 frontmatter.updatedAt && (
                     <span class="flex gap-1 items-center text-xl text-gray-500">
-                        <RotateCw size={20} />{" "}
+                        <Icon name="lucide:rotate-cw" size={20} />{" "}
                         {frontmatter.updatedAt.toLocaleDateString()}
                     </span>
                 )

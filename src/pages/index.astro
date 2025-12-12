@@ -2,125 +2,148 @@
 import Layout from "../layouts/Layout.astro";
 import PinnedRepository from "../components/PinnedRepository.astro";
 
-import { Server, Code } from "lucide-react";
-import {
-  SiPython,
-  SiTypescript,
-  SiBun,
-  SiDrizzle,
-  SiSqlalchemy,
-  SiHono,
-  SiFastapi,
-  SiReact,
-  SiVuedotjs,
-  SiTailwindcss,
-} from "@icons-pack/react-simple-icons";
+import { Icon } from 'astro-icon/components';
 import Typewriter from "astro-typewriter";
 ---
 
 <Layout title="Home" description="Cute fox" thumbnail="" isTop="true">
-  <section class="text-center py-20 px-4 bg-[#FCF8F1]">
-    <h1 class="text-5xl font-bold text-gray-900 h-20" translate="no">
-      I'm{" "}
-      <span class="text-[#E78B30]">
-        <Typewriter
-          messages={["AmaseCocoa", "a Hobby Developer", "a Student"]}
-          style="line-height: 1.2em"
-          writeSpeed={50}
-          waitWritten={2000}
-        />
-      </span>
-      .
-    </h1>
-    <p class="text-xl text-gray-600 mt-4">
-      Cute fox
-    </p>
-    <a
-      href="/works"
-      class="mt-8 inline-block bg-[#E99643] text-white font-bold py-2 px-4 rounded-full hover:bg-[#D4873B] transition-colors"
-    >
-      View My Works
-    </a>
-  </section>
-  <section class="py-20 px-4 bg-[#F6EDE0]">
-    <h2 class="text-3xl font-bold mb-12 text-center">Skills</h2>
-    <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-      <div class="bg-white rounded-2xl p-6">
-        <div class="flex gap-2 items-center mb-4">
-          <Server />
-          <h3 class="text-2xl font-bold text-gray-900">Backend</h3>
+    <section class="text-center py-20 px-4 bg-[#FCF8F1]">
+        <h1 class="text-5xl font-bold text-gray-900 h-20" translate="no">
+            I'm
+            <span class="text-[#E78B30]">
+                <Typewriter
+                    messages={["AmaseCocoa.", "a Hobby Developer.", "a Student."]}
+                    style="line-height: 1.2em"
+                    writeSpeed={50}
+                    waitWritten={2000}
+                />
+            </span>
+        </h1>
+        <p class="text-xl text-gray-600 mt-4">Cute fox</p>
+        <a
+            href="/works"
+            class="mt-8 inline-block bg-[#E99643] text-white font-bold py-2 px-4 rounded-full hover:bg-[#D4873B] transition-colors"
+        >
+            View My Works
+        </a>
+    </section>
+    <section class="py-20 px-4 bg-[#F6EDE0]">
+        <h2 class="text-3xl font-bold mb-12 text-center">Skills</h2>
+        <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div class="bg-white rounded-2xl p-6">
+                <div class="flex gap-2 items-center mb-4">
+                    <Icon name="lucide:server" />
+                    <h3 class="text-2xl font-bold text-gray-900">Backend</h3>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:python" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">Python</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:typescript" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">TypeScript</span
+                        >
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:bun" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">Bun</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:drizzle" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">Drizzle</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:sqlalchemy" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">SQLAlchemy</span
+                        >
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        {/*<SiElysia size={16} class="mr-2 text-white" /> */}
+                        <span class="text-white" translate="no">Elysia</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:hono" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">Hono</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:fastapi" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">FastAPI</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-6">
+                <div class="flex gap-2 items-center mb-4">
+                    <Icon name="lucide:code" />
+                    <h3 class="text-2xl font-bold text-gray-900">Frontend</h3>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:tailwindcss" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no"
+                            >Tailwind CSS</span
+                        >
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:vuedotjs" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">Vue.js</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:react" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">React</span>
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:typescript" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">TypeScript</span
+                        >
+                    </div>
+                    <div
+                        class="flex items-center bg-[#E78B30] rounded-full px-3 py-1"
+                    >
+                        <Icon name="simple-icons:bun" size={16} class="mr-2 text-white" />
+                        <span class="text-white" translate="no">Bun</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiPython size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Python</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiTypescript size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">TypeScript</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiBun size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Bun</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiDrizzle size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Drizzle</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiSqlalchemy size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">SQLAlchemy</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            {/*<SiElysia size={16} class="mr-2 text-white" /> */}
-            <span class="text-white" translate="no">Elysia</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiHono size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Hono</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiFastapi size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">FastAPI</span>
-          </div>
+    </section>
+    <section class="py-10 px-4 bg-[#F6EDE0]">
+        <h2 class="text-3xl font-bold mb-12 text-center">
+            My Featured Open Source Projects
+        </h2>
+        <div class="space-y-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <PinnedRepository />
         </div>
-      </div>
-      <div class="bg-white rounded-2xl p-6">
-        <div class="flex gap-2 items-center mb-4">
-          <Code />
-          <h3 class="text-2xl font-bold text-gray-900">Frontend</h3>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiTailwindcss size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Tailwind CSS</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiVuedotjs size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Vue.js</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiReact size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">React</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiTypescript size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">TypeScript</span>
-          </div>
-          <div class="flex items-center bg-[#E78B30] rounded-full px-3 py-1">
-            <SiBun size={16} className="mr-2 text-white" />
-            <span class="text-white" translate="no">Bun</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="py-10 px-4 bg-[#F6EDE0]">
-    <h2 class="text-3xl font-bold mb-12 text-center">
-      My Featured Open Source Projects
-    </h2>
-    <div class="space-y-8 max-w-4xl mx-auto">
-      <PinnedRepository />
-    </div>
-  </section>
+    </section>
 </Layout>
+
+<style>
+    .after-dot::after {
+        color: black;
+        content: "."
+    }
+</style>

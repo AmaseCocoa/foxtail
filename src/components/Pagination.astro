@@ -1,12 +1,12 @@
 ---
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { Icon } from 'astro-icon/components';
 
 const { page } = Astro.props;
 ---
 
 <div class="flex justify-center my-8">
     <nav class="flex gap-4">
-        {page.url.prev && <a href={page.url.prev} class="px-4 py-2 text-gray-800  hover:text-[#D4873B] transition-colors"><ArrowLeft /></a>}
-        {page.url.next && <a href={page.url.next} class="px-4 py-2 text-gray-800  hover:text-[#D4873B] transition-colors"><ArrowRight /></a>}
+        {page.url.prev && <a href={page.url.prev} class="px-4 py-2 text-gray-800  hover:text-[#D4873B] transition-colors"><Icon name="lucide:arrow-left" /></a>}
+        {page.url.next && <a href={page.url.next} class="px-4 py-2 text-gray-800  hover:text-[#D4873B] transition-colors"><Icon name="lucide:arrow-right" /></a>}
     </nav>
 </div>
